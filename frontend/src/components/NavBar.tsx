@@ -42,7 +42,7 @@ function NavBar({ setIsLoading }: LoadingProps) {
     if (!searchTerm) return;
 
     try {
-      const response = await fetch(`http://127.0.0.1:5000/api/movies?search=${searchTerm}`);
+      const response = await fetch(`https://movie-recommender-production-7f63.up.railway.app/api/movies?search=${searchTerm}`);
       const data = await response.json();
       
       if (searchTerm.length < 2) {

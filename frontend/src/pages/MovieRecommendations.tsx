@@ -51,7 +51,7 @@ function MovieRecommendations({ isLoading, setIsLoading }: LoadingProps) {
     setIsLoading(true);
     setSelectedPage(1);
     
-    fetch(`http://127.0.0.1:5000/recommendations/${userId}`)
+    fetch(`https://movie-recommender-production-7f63.up.railway.app/recommendations/${userId}`)
       .then((res) => {
         if (!res.ok) throw new Error(`Backend error: ${res.status}`);
         return res.json();
@@ -70,7 +70,7 @@ function MovieRecommendations({ isLoading, setIsLoading }: LoadingProps) {
     if (!userId) return;
     setIsLoading(true);
 
-    fetch(`http://127.0.0.1:5000/recommendations/${userId}`)
+    fetch(`https://movie-recommender-production-7f63.up.railway.app/recommendations/${userId}`)
       .then((res) => res.json())
       .then((data) => {
         setMovies(data.recommendations || []);

@@ -13,7 +13,7 @@ function Ratings({movieId, clear}: {movieId: string, clear: boolean}) {
     async function rateMovie(value: number) {
         if (!currentUser) return;
         
-        const response = await fetch("http://127.0.0.1:5000/rate", {
+        const response = await fetch("https://movie-recommender-production-7f63.up.railway.app/rate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -36,7 +36,7 @@ function Ratings({movieId, clear}: {movieId: string, clear: boolean}) {
         if (!currentUser || !movieId) return;
 
         try {
-            const response = await fetch(`http://127.0.0.1:5000/rate?user_id=${encodeURIComponent(currentUser.id)}&tconst=${encodeURIComponent(movieId)}`);
+            const response = await fetch(`https://movie-recommender-production-7f63.up.railway.app/rate?user_id=${encodeURIComponent(currentUser.id)}&tconst=${encodeURIComponent(movieId)}`);
             if (!response.ok) return;
 
             const data = await response.json();

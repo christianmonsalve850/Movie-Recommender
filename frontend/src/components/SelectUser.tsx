@@ -45,7 +45,7 @@ function SelectUser() {
     useEffect(() => {
         const loadUsers = async () => {
             try {
-                const response = await fetch("http://127.0.0.1:5000/api/users");
+                const response = await fetch("https://movie-recommender-production-7f63.up.railway.app/api/users");
                 if (!response.ok) {
                     console.error("Failed to load users from CSV");
                     return;
@@ -65,7 +65,7 @@ function SelectUser() {
         const newUser = new User(name, selectedAvatar);
         
         try {
-            const response = await fetch("http://127.0.0.1:5000/api/users", {
+            const response = await fetch("https://movie-recommender-production-7f63.up.railway.app/api/users", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
