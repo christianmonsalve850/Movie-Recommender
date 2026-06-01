@@ -38,37 +38,37 @@ def get_movies():
 
 @app.route("/recommendations/<user_id>")
 def recommendation(user_id):
-
-    recs = get_recommendations(user_id, 60)
-    if recs is None:
+    recs = get_recommendations(user_id, 10)
+    if (recs is None):
         recs = default_recs
         
-    recs_to_fetch = recs[:20] 
     detailed_movies = []
     
-    for imdb_id in recs_to_fetch:
+    for imdb_id in recs:
         try:
             response = requests.get(f"https://api.imdbapi.dev/titles/{imdb_id}", timeout=5)
+            
             if response.status_code == 429:
-                print(f"Backend rate limit hit for {imdb_id}. Waiting 2 seconds...")
+                print(f"Backend hit rate limit for {imdb_id}. Cooling down for 2 seconds...")
                 time.sleep(2) 
+                
                 response = requests.get(f"https://api.imdbapi.dev/titles/{imdb_id}", timeout=5)
 
             if response.status_code == 200:
                 movie_data = response.json()
                 detailed_movies.append(movie_data)
             else:
-                print(f"Skipping {imdb_id}: Status code {response.status_code}")
+                print(f"Skipping {imdb_id}: Received status code {response.status_code}")
                 
         except requests.exceptions.RequestException as e:
             print(f"Network error on backend fetching {imdb_id}: {e}")
             
         time.sleep(0.3)
         
-    return jsonify({
+    return {
         "user_id": user_id, 
         "recommendations": detailed_movies
-    })
+    }
 
 @app.route("/rate", methods=["GET", "POST"])
 def rate_movie():
