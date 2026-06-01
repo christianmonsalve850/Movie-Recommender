@@ -12,9 +12,9 @@ app = Flask(__name__)
 
 CORS(app)
 
-df = pd.read_csv('/Users/christianmonsalve/Desktop/CODE/Projects/Movie_Recs/data/processed/explored_movies.csv')
+df = pd.read_csv('data/processed/explored_movies.csv')
 df = df.query('year > 2000').sort_values(['year', 'averageRating', 'numVotes'], ascending=False)
-main_user_recs = pd.read_csv('/Users/christianmonsalve/Desktop/CODE/Projects/Movie_Recs/data/recommendations_christian.csv')
+main_user_recs = pd.read_csv('data/recommendations_christian.csv')
 
 default_recs = [
     "tt0848228",  # The Avengers (2012)
@@ -93,7 +93,7 @@ def recommendation(user_id):
 
 @app.route("/rate", methods=["GET", "POST"])
 def rate_movie():
-    csv_path = "/Users/christianmonsalve/Desktop/CODE/Projects/Movie_Recs/user_data/user_data.csv"
+    csv_path = "user_data/user_data.csv"
 
     if request.method == "GET":
         user_id = request.args.get("user_id")
@@ -151,7 +151,7 @@ def rate_movie():
 
 @app.route("/api/users", methods=["GET", "POST"])
 def handle_users():
-    users_csv_path = "/Users/christianmonsalve/Desktop/CODE/Projects/Movie_Recs/user_data/users.csv"
+    users_csv_path = "user_data/users.csv"
 
     if request.method == "GET":
         users = []
