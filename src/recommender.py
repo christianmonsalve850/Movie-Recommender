@@ -2,17 +2,22 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
-import sys
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def get_user_profile(user_id):
-    data = pd.read_csv('/Users/christianmonsalve/Desktop/CODE/Projects/Movie_Recs/user_data/user_data.csv')
+    csv_path = os.path.normpath(os.path.join(BASE_DIR, '..', 'user_data', 'user_data.csv'))
+    data = pd.read_csv(csv_path)
     data = data[data['user_id'] == user_id].drop(columns=['user_id'])
     if data.shape[0] < 5:
         return None
     return data
 
 def get_movie_features():
-    data = pd.read_csv('/Users/christianmonsalve/Desktop/CODE/Projects/Movie_Recs/data/processed/new_movie_features.csv')
+    csv_path = os.path.normpath(os.path.join(BASE_DIR, '..', 'data', 'processed', 'new_movie_features.csv'))
+
+    data = pd.read_csv(csv_path)
     return data
 
 def generate_user_vector(user_id):

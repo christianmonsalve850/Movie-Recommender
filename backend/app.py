@@ -13,13 +13,11 @@ CORS(app)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 explored_movies_path = os.path.normpath(os.path.join(BASE_DIR, '..', 'data', 'processed', 'explored_movies.csv'))
-recs_christian_path = os.path.normpath(os.path.join(BASE_DIR, '..', 'data', 'recommendations_christian.csv'))
 user_data_csv_path = os.path.normpath(os.path.join(BASE_DIR, '..', 'user_data', 'user_data.csv'))
 users_csv_path = os.path.normpath(os.path.join(BASE_DIR, '..', 'user_data', 'users.csv'))
 
 df = pd.read_csv(explored_movies_path)
 df = df.query('year > 2000').sort_values(['year', 'averageRating', 'numVotes'], ascending=False)
-main_user_recs = pd.read_csv(recs_christian_path)
 
 default_recs = [
     "tt0848228", "tt4154796", "tt0468569", "tt0110912", "tt0133093",
@@ -40,14 +38,11 @@ def get_movies():
 
 @app.route("/recommendations/<user_id>")
 def recommendation(user_id):
-    # CRITICAL SPEED UPDATE: Slice down the external API loop.
-    # Fetching details for 60 movies with a 0.3-second delay takes 20+ seconds,
-    # causing your frontend loader to stay stuck forever or timeout!
+
     recs = get_recommendations(user_id, 60)
     if recs is None:
         recs = default_recs
         
-    # Only fetch details for the first 20 recommendations to keep it lightning fast
     recs_to_fetch = recs[:20] 
     detailed_movies = []
     
