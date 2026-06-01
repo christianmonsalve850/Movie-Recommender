@@ -1,2 +1,2 @@
-./data/raw/title.basics.tsv
-./data/raw/title.ratings.tsv
+# Ignore all large raw data files
+data/raw/*
