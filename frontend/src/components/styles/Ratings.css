@@ -1,0 +1,36 @@
+.rating:not(:checked)>label {
+    color: #ccc;
+}
+
+.rating {
+    gap: 4px;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+}
+
+.rating label {
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.rating label {
+    font-size: 1.1rem;
+}
+
+input[type="radio"] {
+    display: none;
+}
+
+.rating>input:checked~label {
+    color: orange
+}
+
+.rating:hover input:checked~label {
+    color: #ccc;
+}
+
+.rating>label:hover,
+.rating>label:hover~label {
+    color: orange !important;
+}

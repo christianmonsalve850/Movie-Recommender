@@ -1,0 +1,27 @@
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 40;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+.spinner {
+    width: 64px;
+    height: 64px;
+    border: 6px solid #ddd;
+    border-top-color: black;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

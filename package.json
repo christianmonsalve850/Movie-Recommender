@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "react-router-dom": "^7.13.0",
+    "react-select": "^5.10.2",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3"
+  }
+}
