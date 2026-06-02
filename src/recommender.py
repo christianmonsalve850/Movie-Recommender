@@ -6,9 +6,6 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# ==========================================
-# 1. LAZY GLOBAL LOADING (Memory-Safe)
-# ==========================================
 _MOVIES_CACHE = None
 
 def get_movie_features():
@@ -16,27 +13,19 @@ def get_movie_features():
     if _MOVIES_CACHE is None:
         csv_path = os.path.normpath(os.path.join(BASE_DIR, '..', 'data', 'processed', 'new_movie_features.csv'))
         
-        # 1. Explicitly list only the features your math calculations need!
-        # Drop text description columns or unneeded metadata strings right from the disk read stage
         needed_cols = [
             'tconst', 'primaryTitle', 'year', 'runtimeMinutes', 
             'logNumVotes', 'averageRating', 'releaseDecade', 
             'runtime_bin', 'bayesRating'
         ]
         
-        # 2. Add extra genre columns to 'needed_cols' if your user vector uses them
         df = pd.read_csv(csv_path, usecols=needed_cols)
         
-        # Downcast floats to minimize space
         float_cols = df.select_dtypes(include=['float64']).columns
         df[float_cols] = df[float_cols].astype('float32')
         _MOVIES_CACHE = df
     return _MOVIES_CACHE
 
-
-# ==========================================
-# 2. DATA PROFILING FUNCTIONS
-# ==========================================
 def get_user_profile(user_id):
     csv_path = os.path.normpath(os.path.join(BASE_DIR, '..', 'user_data', 'user_data.csv'))
     try:
@@ -53,7 +42,6 @@ def generate_user_vector(user_id, user_profile):
     if user_profile is None: 
         return None
 
-    # Uses the global cached instance instead of parsing a new file from scratch
     movie_features = get_movie_features()
     data = user_profile.merge(movie_features, how='left', on='tconst')
 
@@ -64,7 +52,6 @@ def generate_user_vector(user_id, user_profile):
     user_mean = features['userRating'].mean()
     weight = data['userRating'] - user_mean
 
-    # Safely drop target columns if they exist
     cols_to_drop = [c for c in ['userRating', 'numVotes'] if c in features.columns]
     features = features.drop(columns=cols_to_drop)
 
@@ -84,24 +71,18 @@ def generate_user_vector(user_id, user_profile):
     return user_vector, scaler
 
 
-# ==========================================
-# 3. CORE RECOMMENDATION ENGINE
-# ==========================================
 def get_recommendations(user_id, k=4):
     user_profile = get_user_profile(user_id)
     if user_profile is None or user_profile.empty: 
         return None
         
-    # Pass down the existing user_profile pointer to save processing cycles
     user_vector_data = generate_user_vector(user_id, user_profile)
     if user_vector_data is None:
         return None
     user_vector, scaler = user_vector_data
 
-    # Fetch global movie data pointer
     movies = get_movie_features()
     
-    # Filter unseen records and slice by year boundary
     movies = movies[~movies['tconst'].isin(user_profile['tconst'])].query('year > 1980').copy()
     if movies.empty:
         return []
@@ -109,10 +90,8 @@ def get_recommendations(user_id, k=4):
     to_standardize = ['year', 'runtimeMinutes', 'logNumVotes', 'averageRating', 'releaseDecade', 'runtime_bin', 'bayesRating']
     feature_columns = [col for col in user_vector.index if col in movies.columns]
 
-    # Standardize features in-place without generating a dataframe duplicate
     movies[to_standardize] = scaler.transform(movies[to_standardize])
 
-    # Perform matrix operations using raw NumPy arrays
     calc_matrix = movies[feature_columns].to_numpy()
     user_vector_2d = user_vector.to_numpy().reshape(1, -1)
 

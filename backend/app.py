@@ -38,7 +38,7 @@ def get_movies():
 
 @app.route("/recommendations/<user_id>")
 def recommendation(user_id):
-    recs = get_recommendations(user_id, 10)
+    recs = get_recommendations(user_id, 50)
     if (recs is None):
         recs = default_recs
         
