@@ -94,7 +94,8 @@ function SelectUser() {
             value: user.id,
             label: user.name,
             image: user.avatar,
-        }));
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label));
     }, [users]);
 
 
