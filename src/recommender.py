@@ -12,12 +12,22 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 _MOVIES_CACHE = None
 
 def get_movie_features():
-    """Loads the massive features CSV exactly once and caches it in global RAM."""
     global _MOVIES_CACHE
     if _MOVIES_CACHE is None:
         csv_path = os.path.normpath(os.path.join(BASE_DIR, '..', 'data', 'processed', 'new_movie_features.csv'))
-        # Downcast float types to float32 to cut RAM footprints in half
-        df = pd.read_csv(csv_path)
+        
+        # 1. Explicitly list only the features your math calculations need!
+        # Drop text description columns or unneeded metadata strings right from the disk read stage
+        needed_cols = [
+            'tconst', 'primaryTitle', 'year', 'runtimeMinutes', 
+            'logNumVotes', 'averageRating', 'releaseDecade', 
+            'runtime_bin', 'bayesRating'
+        ]
+        
+        # 2. Add extra genre columns to 'needed_cols' if your user vector uses them
+        df = pd.read_csv(csv_path, usecols=needed_cols)
+        
+        # Downcast floats to minimize space
         float_cols = df.select_dtypes(include=['float64']).columns
         df[float_cols] = df[float_cols].astype('float32')
         _MOVIES_CACHE = df
